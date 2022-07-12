@@ -1,4 +1,3 @@
-
 //import com.opencsv.CSVWriter;
 
 import java.io.FileWriter;
@@ -241,7 +240,7 @@ public class AddressBook
         System.out.println("Enter 1 to Search a Contact by City/Press 2 to Search a Contact by State");
         int input = in.nextInt();
         switch (input) {
-            case 1-> {
+            case 1 -> {
                 int count1 = 0;
                 System.out.println("Enter the City Name");
                 String city = in.next();
@@ -344,7 +343,7 @@ public class AddressBook
 
     public void writeToCSV() throws IOException {
         List<String[]> csvData = new LinkedList<>();
-        CSVWriter write = new CSVWriter();
+        CSVWriter write = new CSVWriter(new FileWriter("contacts.csv"));
         int i = 0;
         for (String key : map.keySet()) {
             i++;
@@ -357,5 +356,24 @@ public class AddressBook
         }
         write.writeAll(csvData);
         write.flush();
+    }
+
+    public void writeToJSON() throws IOException {
+        JSONObject obj = new JSONObject();
+        int i = 0;
+        int j = 0;
+        for (String key : map.keySet()) {
+            i++;
+            System.out.println("Address Book #" + i + ": " + key);
+            List<Contacts> sortedList = map.get(key).stream().sorted(Comparator.comparing(Contacts::getState)).toList();
+
+            for (Contacts info : sortedList) {
+                j++;
+                obj.put("Contact" + j, info.toString());
+            }
+        }
+        FileWriter file = new FileWriter("contact.json");
+        file.write(obj.toString());
+        file.close();
     }
 }
